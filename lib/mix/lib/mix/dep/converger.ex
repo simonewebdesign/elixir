@@ -48,6 +48,9 @@ defmodule Mix.Dep.Converger do
   """
   def converge(acc, lock, opts, callback) do
     {deps, acc, lock} = all(acc, lock, opts, callback)
+    remote = Mix.RemoteConverger.get
+    # TODO: Remove function_exported? check before releasing 1.4
+    if remote && function_exported?(remote, :post_converge, 0), do: remote.post_converge()
     {topsort(deps), acc, lock}
   end
 

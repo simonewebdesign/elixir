@@ -1,5 +1,6 @@
 defmodule Mix.Hex do
   @moduledoc false
+  # TODO: Bump to ">= 0.14.0" before releasing 1.4
   @hex_requirement  ">= 0.5.0"
   @hex_mirror       "https://repo.hex.pm"
 
