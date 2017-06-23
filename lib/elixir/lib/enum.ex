@@ -1821,6 +1821,8 @@ defmodule Enum do
   end
 
   def reduce(%{__struct__: _} = enumerable, acc, fun) do
+    # IO.puts "!!!REDUCE CALLED!!!"
+    # IO.inspect enumerable.__struct__, label: "struct name"
     Enumerable.reduce(enumerable, {:cont, acc},
                       fn x, acc -> {:cont, fun.(x, acc)} end) |> elem(1)
   end
@@ -3184,6 +3186,45 @@ defimpl Enumerable, for: Map do
   defp reduce_list([],      {:cont, acc}, _fun),   do: {:done, acc}
   defp reduce_list([h | t], {:cont, acc}, fun),    do: reduce_list(t, fun.(h, acc), fun)
 end
+
+defimpl Enumerable, for: MapSet do
+  defstruct map: %{}, version: 2
+
+
+  def reduce(map_set, acc, fun) do
+    IO.puts "#{__MODULE__}.Enumerable.reduce HAS BEEN CALLED"
+    list = MapSet.to_list(map_set)
+    reduced = Enumerable.List.reduce(list, acc, fun)
+    Enum.into(reduced, %__MODULE__{})
+  end
+  def member?(map_set, val), do: {:ok, MapSet.member?(map_set, val)}
+  def count(map_set), do: {:ok, MapSet.size(map_set)}
+end
+#   def filter(_set) do
+#     {:ok, "cool"}
+#   end
+
+  # def count(map) do
+  #   {:ok, map_size(map)}
+  # end
+
+  # def member?(map, {key, value}) do
+  #   {:ok, match?({:ok, ^value}, :maps.find(key, map))}
+  # end
+
+  # def member?(_map, _other) do
+  #   {:ok, false}
+  # end
+
+  # def reduce(map, acc, fun) do
+  #   reduce_list(:maps.to_list(map), acc, fun)
+  # end
+
+  # defp reduce_list(_,       {:halt, acc}, _fun),   do: {:halted, acc}
+  # defp reduce_list(list,    {:suspend, acc}, fun), do: {:suspended, acc, &reduce_list(list, &1, fun)}
+  # defp reduce_list([],      {:cont, acc}, _fun),   do: {:done, acc}
+  # defp reduce_list([h | t], {:cont, acc}, fun),    do: reduce_list(t, fun.(h, acc), fun)
+# end
 
 defimpl Enumerable, for: Function do
   def count(_function),

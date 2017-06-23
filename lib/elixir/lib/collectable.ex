@@ -106,3 +106,24 @@ defimpl Collectable, for: Map do
     end}
   end
 end
+
+defimpl Collectable, for: Enumerable.MapSet do
+  def into(original) do
+    {original, fn
+      map_set, {:cont, x} -> MapSet.put(map_set, x)
+      map_set, :done -> map_set
+      _, :halt -> :ok
+    end}
+  end
+end
+
+
+defimpl Collectable, for: MapSet do
+  def into(original) do
+    {original, fn
+      map_set, {:cont, x} -> MapSet.put(map_set, x)
+      map_set, :done -> map_set
+      _, :halt -> :ok
+    end}
+  end
+end

@@ -1,5 +1,16 @@
 Code.require_file "test_helper.exs", __DIR__
 
+
+defmodule Deck do
+  defstruct cards: MapSet.new
+
+  def filter_red_cards(deck) do
+    no_black_cards = Enum.filter(deck.cards, fn card -> card.colour != :black end)
+    %__MODULE__{deck | cards: no_black_cards}
+  end
+end
+
+
 defmodule MapSetTest do
   use ExUnit.Case, async: true
 
@@ -108,4 +119,53 @@ defmodule MapSetTest do
     list = MapSet.to_list(MapSet.new(5..120))
     assert Enum.sort(list) == Enum.to_list(5..120)
   end
+
+  test "preserves the module type" do
+    my_struct = struct(Deck)
+    # IO.inspect my_struct, label: "my_struct"
+    # IO.inspect my_struct.cards, label: "my_struct.cards"
+    updated_struct = %Deck{my_struct | cards: Enum.filter(my_struct.cards, fn card -> card.colour != :black end)}
+    # new_cards = updated_struct.cards
+    # IO.inspect updated_struct, label: "updated_struct"
+    # IO.inspect updated_struct.cards, label: "updated_struct.cards"
+    # %Deck{cards: ^new_cards} = updated_struct
+    assert my_struct.cards == updated_struct.cards
+  end
+
+  test "test 2" do
+    map_set = MapSet.new()
+    # IO.inspect map_set, label: "map_set"
+    updated_map_set = Enum.filter(map_set, fn x -> x != 0 end)
+    # IO.inspect updated_map_set, label: "updated_map_set"
+    assert map_set == MapSet.new() # this works
+    # assert %MapSet{} = updated_map_set # this fails
+    %module_name{} = updated_map_set
+    assert module_name == MapSet
+  end
+
+  test "test 3" do
+    map_set = MapSet.new()
+    # IO.inspect map_set, label: "map_set"
+    updated_map_set = Enum.filter(map_set, fn x -> x != 0 end)
+    # IO.inspect updated_map_set, label: "updated_map_set"
+    assert updated_map_set == MapSet.new() # this should fail in theory
+    # assert %MapSet{} = updated_map_set # this fails
+    # %module_name{} = updated_map_set
+    # assert module_name == MapSet
+  end
+
+  test "test 4" do
+    map_set = MapSet.new()
+    # IO.inspect map_set, label: "map_set"
+    updated_map_set = Enum.filter(map_set, fn x -> x != 0 end)
+    # IO.inspect updated_map_set, label: "updated_map_set"
+    assert updated_map_set == MapSet.new() # this should fail in theory
+
+    assert map_set.__struct__ == MapSet
+    assert updated_map_set.__struct__ == MapSet
+    # assert %MapSet{} = updated_map_set # this fails
+    # %module_name{} = updated_map_set
+    # assert module_name == MapSet
+  end
 end
+

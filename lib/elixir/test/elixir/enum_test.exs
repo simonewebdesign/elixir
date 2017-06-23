@@ -1527,6 +1527,14 @@ defmodule EnumTest.Map do
   end
 end
 
+# defmodule EnumTest.MapSet do
+#   use ExUnit.Case, async: true
+
+#   test "preserves the type" do
+#     assert
+#   end
+# end
+
 defmodule EnumTest.SideEffects do
   use ExUnit.Case, async: true
 
